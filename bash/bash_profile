@@ -1,0 +1,118 @@
+umask 002
+
+if [ -f ~/.bash_git ]; then
+	. ~/.bash_git
+fi
+
+if [ -f ~/.bash_git ]; then
+	. ~/.bash_private
+fi
+
+__has_parent_dir () {
+    # Utility function so we can test for things like .git/.hg without firing up a
+    # separate process
+    test -d "$1" && return 0;
+    current="."
+
+    while [ ! "$current" -ef "$current/.." ]; do
+        if [ -d "$current/$1" ]; then
+            return 0;
+        fi
+        current="$current/..";
+    done
+
+    return 1;
+}
+
+__vcs_name() {
+    if [ -d .svn ]; then
+        echo "-[svn]";
+    elif __has_parent_dir ".git"; then
+        echo "-[$(__git_ps1 'git %s')]";
+    elif __has_parent_dir ".hg"; then
+        echo "-[hg $(hg branch)]"
+    fi
+}
+
+PS1='\[\033[1;34m\]\@ \[\033[0;32m\]wun\[\033[0;32m\]@\[\033[0;32m\]mac\[\033[0m\]\[\033[0;36m\][\w]\[\033[0;35m\]$(__vcs_name)\[\033[0m\]$ '
+
+# ls
+alias ls='ls -FG'
+alias ll='ls -lh'
+alias la='ls -Ah'
+alias l='ls -CFh'
+
+# show or hide hidden files in the Finder
+alias showHidden='defaults write com.apple.finder AppleShowAllFiles TRUE; killall Finder'
+alias hideHidden='defaults write com.apple.finder AppleShowAllFiles FALSE; killall Finder'
+
+# Environment Variables
+export PATH=/usr/local/sbin:/usr/local/bin:~/.composer/vendor/bin:$PATH
+export PHP_AUTOCONF=/usr/local/bin/autoconf
+#export VAGRANT_DEFAULT_PROVIDER=virtualbox
+export VAGRANT_DEFAULT_PROVIDER=vmware_fusion
+export GEM_HOME="/usr/local/bin/opt/gems"
+export GEM_PATH="/usr/local/bin/opt/gems"
+
+# set java to use version 1.7 instead of 1.6
+#export JAVA_HOME='/Library/Internet Plug-ins/JavaAppletPlugin.plugin/Contents/Home'
+
+# OSX settings
+alias showFiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
+alias hideFiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
+
+# other
+alias lesss='/usr/share/vim/vim73/macros/less.sh'
+alias fuck='$(thefuck $(fc -ln -1))'
+alias art='php artisan'
+
+# git
+source /usr/local/etc/bash_completion.d/git-completion.bash
+alias gs='git status '
+alias ga='git add '
+alias gb='git branch '
+alias gc='git commit'
+alias gd='git diff'
+alias go='git checkout '
+alias gsc='git rev-parse --short HEAD | xargs echo -n | pbcopy' # copy short commit hash to clipboard
+alias gl="git log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+alias glb='gl master..'
+
+# MySQL
+alias mysql.start='mysql.server start'
+alias mysql.stop='mysql.server stop'
+alias mysql.restart='mysql.server restart'
+alias mysql.status='mysql.server status'
+
+# Apache
+alias apache.start='apachectl start'
+alias apache.stop='apachectl stop'
+alias apache.restart='apachectl restart'
+alias apache.status='apachectl status | grep -E "Version|uptime"'
+
+# Apache/PHP Logs
+alias www.error='tail -250f /usr/local/var/log/apache2/error_log'
+alias www.access='tail -250f /usr/local/var/log/apache2/access_log'
+alias dev.error='tail -250f ~/Sites/logs/dev-error_log'
+alias dev.access='tail -250f ~/Sites/logs/dev-access_log'
+alias php.error='tail -250f ~/Sites/logs/php-error_log'
+
+# PHP-FPM
+alias php.fpm="php\$(php -r \"echo str_replace('.', '', substr(phpversion(), 0, 3));\")-fpm"
+alias php.start="php.fpm start"
+alias php.stop="php.fpm stop"
+alias php.restart="php.fpm restart"
+alias php.status="php.fpm status"
+alias php.switch="sphp"
+
+# Dev mode
+alias dev.status="apache.status; mysql.status; php.status; ps -acx -o pid,user,command | egrep 'http[d]|mysql[d]|php-fpm|dnsmasq'"
+alias dev.start='apache.start; php.start; mysql.start;'
+alias dev.stop='apache.stop; php.stop; mysql.stop;'
+alias dev.restart='apache.restart; php.restart; mysql.restart;'
+
+# SSH
+alias holodeck="ssh aisoriswp001"
+alias bridge="ssh aisoriswp002"
+
+alias android='~/Library/Android/sdk/tools/emulator -avd Nexus5' 

@@ -1,0 +1,27 @@
+# OS generated files #
+**/.DS_Store
+**/.DS_Store?
+**/._*
+**/.Spotlight-V100
+**/.fseventsd
+**/.Trashes
+**/Desktop.ini
+**/ehthumbs.db
+**/Thumbs.db
+
+# Vim
+**/*~
+**/*.bak
+**/*.sw[abcdefghijklmnop]
+
+# Databases
+**/*.sqlite
+
+# Web tools
+**/config.codekit
+**/*.sublime-project
+**/*.sublime-workspace
+node_modules
+**/capistrano.log
+composer.phar
+
